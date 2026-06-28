@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  mysql-db:
+    image: mysql:8.0-oracle # This image tends to use slightly less RAM than Debian
+    container_name: springsecurity_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: springsecurity_revision
+    deploy:
+      resources:
+        limits:
+          memory: 512M #Strictly limits the container to 512MB RAM
+    volumes:
+      - mysql_data:/var/lib/mysql # Persists data even if container stops
+      - ./my-mysql.cnf:/etc/mysql/conf.d/my-mysql.cnf # Injects low-memory settings
+    command: --innodb-buffer-pool-size=64M --performance-schema=OFF # Lowers RAM usage instantly
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: mysql_gui
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql-db
+      PMA_USER: root
+      PMA_PASSWORD: test
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+volumes:
+  mysql_data:
+
