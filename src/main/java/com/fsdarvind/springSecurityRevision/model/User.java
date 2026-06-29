@@ -1,12 +1,10 @@
 package com.fsdarvind.springSecurityRevision.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.util.List;
 
 @Entity
 @Table(name="app_user")
@@ -15,13 +13,21 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "Name can not be null!!")
     private String name;
+
     @Email(message = "Invalid email format!!")
+    @NotBlank(message = "Email can not be blank!!")
+    @Column(nullable = false, unique = true)
     private String email;
-    @NotBlank
-    @Size(min = 5, max = 10, message = "Please enter password of length 5-10!!")
+
+    @NotBlank(message = "Password can not be blank!!")
+    @Size(min = 5,  message = "Please enter password of minimum length 5!!")
+    @Column(nullable = false, length = 100)
     private String password;
+
     @NotBlank(message = "Role can not be blank!!")
+    @Column(nullable = false)
     private String role;
 }
